@@ -29,6 +29,20 @@ module.exports = {
 
             storeReport(report);
         });
+    },
+
+    fetch: function () {
+        const path = require('path');
+        const fs = require('fs');
+        const directoryPath = path.join(__dirname, '../reports');
+        let reportsPaths = fs.readdirSync(directoryPath);
+
+        let results = [];
+        for (let nextPath of reportsPaths) {
+            results.push(JSON.parse(fs.readFileSync(path.join(directoryPath, nextPath))));
+        }
+
+        return results;
     }
 };
 

@@ -11,7 +11,12 @@ const server = http.createServer((req, res) => {
     } else if (req.url === '/show') {
         let view = require('fs').readFileSync('index.html', 'utf-8');
 
-        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(view);
+    } else if (req.url === '/fetch') {
+        let view = JSON.stringify(require('./service/report').fetch());
+
+        res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(view);
     }
 
