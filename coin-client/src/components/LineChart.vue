@@ -1,46 +1,90 @@
+<template>
+    <div class="container">
+        <line-chart
+                v-if="loaded"
+                :chartdata="chartdata"
+                :options="options"/>
+    </div>
+</template>
+
 <script>
-    import {Line} from "vue-chartjs";
+    import LineChart from './Chart.vue'
+    import Currencies from '../currencies'
+
+    const fetch = require("node-fetch");
+    const url = "http://localhost:8090/fetch";
+
+    function toChartData(reports) {
+        let labels = [];
+        let datasets = {};
+        let baseline = {};
+
+        datasets["EUR"] = {
+            label: "EUR",
+            data: [],
+            backgroundColor: "transparent",
+            borderColor: Currencies.COLORS["EUR"],
+            pointBackgroundColor: Currencies.COLORS["EUR"]
+        };
+
+        for (let report of reports) {
+            labels.push("" + report.date);
+
+            for (let price of report.prices) {
+                if (!baseline[price.base]) {
+                    baseline[price.base] = price.btcEquivalent;
+                }
+
+                if (price.base === "BTC") {
+                    if (!baseline["EUR"]) {
+                        baseline["EUR"] = price.amount;
+                    }
+
+                    datasets["EUR"].data.push(price.amount * 100 / baseline["EUR"]);
+                }
+
+                if (!datasets[price.base]) {
+                    datasets[price.base] = {
+                        label: price.base,
+                        data: [],
+                        backgroundColor: "transparent",
+                        borderColor: Currencies.COLORS[price.base],
+                        pointBackgroundColor: Currencies.COLORS[price.base]
+                    };
+                }
+
+                datasets[price.base].data.push(price.btcEquivalent * 100 / baseline[price.base]);
+            }
+        }
+
+        return { labels: labels, datasets: Object.values(datasets)};
+    }
 
     export default {
-        extends: Line,
-        mounted() {
-            this.renderChart(
-                {
-                    labels: [
-                        "January",
-                        "February",
-                        "March",
-                        "April",
-                        "May",
-                        "June",
-                        "July"
-                    ],
-                    datasets: [
-                        {
-                            label: "Data 1",
-                            data: [2, 10, 5, 9, 0, 6, 20],
-                            backgroundColor: "transparent",
-                            borderColor: "rgba(1, 116, 188, 0.50)",
-                            pointBackgroundColor: "rgba(171, 71, 188, 1)"
-                        },
-                        {
-                            label: "Data 2",
-                            data: [1, 5, 3, 6, 2, 19, 2],
-                            backgroundColor: "transparent",
-                            borderColor: "rgba(100, 222, 111, 0.50)",
-                            pointBackgroundColor: "rgba(189, 0, 50, 1)"
-                        }
-                    ]
-                },
-                {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    title: {
-                        display: true,
-                        text: "My Data"
-                    }
+        name: 'LineChartContainer',
+        components: { LineChart },
+        data: () => ({
+            loaded: false,
+            chartdata: null,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                title: {
+                    display: true,
+                    text: "Coin rates"
                 }
-            );
+            }
+        }),
+        async mounted () {
+            this.loaded = false;
+            try {
+                const response = await fetch.default(url);
+                const reports = await response.json();
+                this.chartdata = toChartData(reports);
+                this.loaded = true
+            } catch (e) {
+                console.error(e);
+            }
         }
-    };
+    }
 </script>

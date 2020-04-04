@@ -1,7 +1,7 @@
 const http = require('http');
 
 const hostname = '127.0.0.1';
-const port = 3000;
+const port = 8090;
 
 const server = http.createServer((req, res) => {
     if (req.url === '/favicon.ico') {
@@ -16,7 +16,7 @@ const server = http.createServer((req, res) => {
     } else if (req.url === '/fetch') {
         let view = JSON.stringify(require('./service/report').fetch());
 
-        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.writeHead(200, {'Content-Type': 'text/html', "Access-Control-Allow-Origin": "*"});
         res.write(view);
     }
 
