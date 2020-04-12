@@ -19,8 +19,8 @@ provider:
 package:
   include:
     - node_modules
+    - services
     - handler.js
-    - s3-bucket.js
     - package.json
 
 functions:

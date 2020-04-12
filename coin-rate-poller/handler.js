@@ -10,5 +10,5 @@ exports.poll = async (event, context, callback) => {
     report.date = new Date(report.timestamp);
     report.field = "value";
     report.anotherField = "another-value";
-    await require("./s3-bucket").storeReport(report);
+    await require("./services/s3-bucket").storeReport(report);
 };
