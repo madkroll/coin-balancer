@@ -14,12 +14,12 @@ module.exports = {
                 }
             });
         }, function () {
-            let btcPrice = parseFloat(prices.find(nextRate => nextRate.base === "BTC").amount).toFixed(2);
+            let btcPrice = parseFloat(prices.find(nextRate => nextRate.base === "BTC").amount);
             prices.sort(function (a, b) {
                 return ('' + a.base).localeCompare(b.base);
             });
             for (let nextRate of prices) {
-                nextRate.btcEquivalent = (btcPrice / nextRate.amount).toFixed(2);
+                nextRate.btcEquivalent = btcPrice / nextRate.amount;
             }
 
             let report = {};
