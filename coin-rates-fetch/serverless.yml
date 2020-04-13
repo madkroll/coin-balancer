@@ -1,4 +1,4 @@
-service: coin-balancer
+service: coin-rates-fetch
 
 provider:
   name: aws
@@ -11,7 +11,11 @@ provider:
   iamRoleStatements:
     - Effect: "Allow"
       Action:
-        - "s3:PutObject"
+        - "s3:ListBucket"
+      Resource: "arn:aws:s3:::coin-balancer"
+    - Effect: "Allow"
+      Action:
+        - "s3:GetObject"
       Resource: "arn:aws:s3:::coin-balancer/*"
 
 package:
@@ -22,7 +26,10 @@ package:
     - package.json
 
 functions:
-  poller:
-    handler: handler.poll
+  fetch:
+    handler: handler.fetch
     events:
-      - schedule: rate(10 minutes)
+      - http:
+          path: rates/fetch
+          method: get
+          cors: true
