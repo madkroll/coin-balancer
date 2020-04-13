@@ -18,11 +18,8 @@ function log() {
   echo "$(isodate): $*"
 }
 
-log "## Install SLS plugins"
-npm install --save-dev serverless-api-compression
+log "## Building app: ${APP_NAME}/${COMPONENT_NAME}"
+npm run build
 
-log "## Build ${APP_NAME}/${COMPONENT_NAME}"
-npm install
-
-log "## Deploy ${APP_NAME}/${COMPONENT_NAME}"
-sls deploy
+log "## Deploying app: ${APP_NAME}/${COMPONENT_NAME}"
+aws s3 sync "${SCRIPT_DIR}/dist" s3://coin-balancer-gui

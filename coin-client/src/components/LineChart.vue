@@ -12,7 +12,8 @@
     import Currencies from '../currencies'
 
     const fetch = require("node-fetch");
-    const url = "http://localhost:8090/fetch";
+    const url = "https://kdloxw1m10.execute-api.eu-west-1.amazonaws.com/dev/rates/fetch";
+    // const url = "http://localhost:8080/dev/rates/fetch";
 
     function toChartData(reports) {
         let labels = [];
@@ -57,12 +58,12 @@
             }
         }
 
-        return { labels: labels, datasets: Object.values(datasets)};
+        return {labels: labels, datasets: Object.values(datasets)};
     }
 
     export default {
         name: 'LineChartContainer',
-        components: { LineChart },
+        components: {LineChart},
         data: () => ({
             loaded: false,
             chartdata: null,
@@ -75,10 +76,12 @@
                 }
             }
         }),
-        async mounted () {
+        async mounted() {
             this.loaded = false;
             try {
-                const response = await fetch.default(url);
+                const response = await fetch.default(url, {
+                        method: 'GET'
+                    });
                 const reports = await response.json();
                 this.chartdata = toChartData(reports);
                 this.loaded = true

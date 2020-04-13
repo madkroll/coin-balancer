@@ -1,5 +1,8 @@
 service: coin-rates-fetch
 
+plugins:
+  - serverless-api-compression
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -24,6 +27,11 @@ package:
     - services
     - handler.js
     - package.json
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  contentEncoding:
+    contentCompression: 100
 
 functions:
   fetch:

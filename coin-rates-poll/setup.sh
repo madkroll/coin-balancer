@@ -2,8 +2,10 @@
 
 set -eo pipefail
 
-APP_NAME="$(cd .. && dirname "${BASH_SOURCE[0]}")"
-COMPONENT_NAME="$(dirname "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+COMPONENT_NAME="$(basename "${SCRIPT_DIR}")"
+APP_NAME="$(basename "$(cd "${SCRIPT_DIR}/.." && pwd)")"
+
 AWS_REGION="eu-west-1"
 AWS_BUCKET="coin-balancer"
 
