@@ -1,34 +1,23 @@
+const client = require('./cb-client').create();
+const coins = require("../settings").COINS;
+const util = require('util');
+
 module.exports = {
 
-    build: function () {
-        let client = require('./cb-client').create();
-        let coins = require("../settings").COINS;
+    build: async function () {
+        const fetchRates = util.promisify(client.getBuyPrice).bind(client);
 
-        let prices = [];
-
-        require('async').each(coins, function (coin, callback) {
-            client.getBuyPrice({'currencyPair': coin + "-EUR"}, function (err, price) {
-                if (price) {
-                    prices.push(price.data);
-                    callback();
-                }
-            });
-        }, function () {
-            let btcPrice = parseFloat(prices.find(nextRate => nextRate.base === "BTC").amount);
-            prices.sort(function (a, b) {
-                return ('' + a.base).localeCompare(b.base);
-            });
-            for (let nextRate of prices) {
-                nextRate.btcEquivalent = btcPrice / nextRate.amount;
+        const prices = [];
+        for (let coin of coins) {
+            if (coin) {
+                let price = await fetchRates({'currencyPair': coin + "-EUR"});
+                delete price.data.currency;
+                prices.push(price.data);
             }
+        }
 
-            let report = {};
-            report.timestamp = Date.now();
-            report.date = new Date(report.timestamp);
-            report.prices = prices;
-
-            storeReport(report);
-        });
+        let report = await buildReport(prices);
+        await storeReport(report);
     },
 
     fetch: function () {
@@ -46,7 +35,25 @@ module.exports = {
     }
 };
 
-function storeReport(report) {
+async function buildReport(prices) {
+    prices.sort(function (a, b) {
+        return ('' + a.base).localeCompare(b.base);
+    });
+
+    let btcPrice = parseFloat(prices.find(nextRate => nextRate.base === "BTC").amount);
+    for (let nextRate of prices) {
+        nextRate.btcEquivalent = btcPrice / nextRate.amount;
+    }
+
+    let report = {};
+    report.timestamp = Date.now();
+    report.date = new Date(report.timestamp);
+    report.prices = prices;
+
+    return report;
+}
+
+async function storeReport(report) {
     let timestamp = report.timestamp;
     let date = report.date;
     let fileName = "./reports/" + timestamp + "_" + date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2) + ".json";

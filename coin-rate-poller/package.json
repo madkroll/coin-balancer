@@ -2,6 +2,8 @@
   "name": "coin-rate-poller",
   "version": "1.0.0",
   "dependencies": {
-    "aws-sdk": "^2.656.0"
+    "async": "^3.2.0",
+    "aws-sdk": "^2.656.0",
+    "coinbase": "^2.0.8"
   }
 }
