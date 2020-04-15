@@ -3,6 +3,7 @@ const s3 = new AWS.S3();
 
 const bucket = "coin-balancer";
 const thresholdInMs = 10 * 60 * 60 * 1000;
+const baseline = "1586864254540";
 
 module.exports = {
 
@@ -21,13 +22,10 @@ module.exports = {
 
         const foundRates = [];
         for (let nextRateReference of storedRatesInfo.Contents) {
-            let rateTimestamp = Number(
-                nextRateReference.Key
-                    .replace("rates/", "")
-                    .split("-")[0]
-            );
+            const rateName = nextRateReference.Key.replace("rates/", "");
+            const rateTimestamp = Number(rateName.split("-")[0]);
 
-            if (rateTimestamp - since < 0) {
+            if (!rateName.startsWith(baseline) && rateTimestamp - since < 0) {
                 // skip old records
                 continue;
             }
