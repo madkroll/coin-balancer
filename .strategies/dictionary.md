@@ -1,0 +1,15 @@
+# Terms
+
+## CG: Crypto Gold
+Single coin used to calculate CG Rates, CG baselines and CG Targets for other coins.
+This coin is dominant. Long-term purpose is to earn CG as much as possible.
+
+## CGR: CG Rate
+Shows how much costs given coin type in CG
+
+## CGT: CG Target
+Sets at which MR given coin type should be bought / sold in CG
+
+## CGB: CG Baseline
+Metric, starting point back in time used to measure grows and drops.
+All CGT, CGR are computed based on it.
