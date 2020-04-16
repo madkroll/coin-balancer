@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <div>Leo, look at this! Here we are!</div>
         <line-chart
                 v-if="loaded"
                 :chartdata="chartdata"
