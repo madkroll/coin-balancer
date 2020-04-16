@@ -29,6 +29,7 @@ Frequent grows and drops give high waves to surf on.
 #### Tactics:
 Convert CG to other coins when they are on low CG rates, and convert back on high CG rates.
 Ignore regular rates. No long-term investments. Short cycles. Daily trades.
+No hopes for the only currency - spread equally across other currencies
 Main goal - accumulate value from other coins in CG.
 
 #### Requires:
@@ -63,3 +64,5 @@ It's meant to hold and accumulate value for years.
 ### Money Pool
 End goal is to save most value accumulated on the market in this pool and rise all investments.
 Top up on periodic basis (every month). It's funds are used to top up CG Pool.
+
+May include EUR, $ or stable coins bound to traditional currencies.
