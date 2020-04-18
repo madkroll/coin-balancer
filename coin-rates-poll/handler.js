@@ -1,24 +1,18 @@
 'use strict';
 
-const util = require('util');
-const client = require('./services/coinbase-client').create();
-const fetchRates = util.promisify(client.getBuyPrice).bind(client);
-const coins = require("./services/settings").COINS;
+const fetch = require("node-fetch");
 const storage = require("./services/s3-bucket");
-const reports = require("./services/reports");
 
 module.exports.poll = async function () {
-    const prices = [];
-    for (let coin of coins) {
-        if (coin) {
-            let price = await fetchRates({'currencyPair': coin + "-EUR"});
-            delete price.data.currency;
-            prices.push(price.data);
-        }
-    }
+    const response = await fetch.default("https://www.coinbase.com/api/v2/assets/prices?base=BTC&filter=listed&resolution=latest");
+    const jsonBody = await response.json();
 
-    console.log(prices);
+    const now = Date.now();
+    const report = {
+        timestamp: now,
+        date: new Date(now),
+        prices: jsonBody.data
+    };
 
-    let report = await reports.buildReport(prices);
     await storage.storeReport(report);
 }

@@ -9,7 +9,6 @@ const COLORS = {
     // noise
     "BAT": "rgba(148,143,143,0.76)",
     "BCH": "rgba(148,143,143,0.76)",
-    "BTC": "rgba(148,143,143,0.76)",
     "DASH": "rgba(148,143,143,0.76)",
     "ETC": "rgba(148,143,143,0.76)",
     "KNC": "rgba(148,143,143,0.76)",
@@ -24,6 +23,9 @@ const COLORS = {
 
     // pumpers
     "OXT": "rgba(109,0,148,0.76)",
+
+    // btc baseline
+    "BTC": "rgba(213,25,0)",
 
     // stablecoins and currencies
     "DAI": "rgb(213,25,0)",

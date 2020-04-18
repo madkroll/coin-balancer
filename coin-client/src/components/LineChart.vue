@@ -13,35 +13,20 @@
 
     const fetch = require("node-fetch");
     const url = "https://kdloxw1m10.execute-api.eu-west-1.amazonaws.com/dev/rates/fetch";
-    // const url = "http://localhost:8080/dev/rates/fetch";
 
     function toChartData(reports) {
         let labels = [];
         let datasets = {};
         let baseline = {};
 
-        datasets["EUR"] = {
-            label: "EUR",
-            data: [],
-            backgroundColor: "transparent",
-            borderColor: Currencies.COLORS["EUR"],
-            pointBackgroundColor: Currencies.COLORS["EUR"]
-        };
-
         for (let report of reports) {
             labels.push("" + report.date);
 
             for (let price of report.prices) {
+                const btcEquivalent = Number(price.prices.latest);
+
                 if (!baseline[price.base]) {
-                    baseline[price.base] = price.btcEquivalent;
-                }
-
-                if (price.base === "BTC") {
-                    if (!baseline["EUR"]) {
-                        baseline["EUR"] = price.amount;
-                    }
-
-                    datasets["EUR"].data.push(price.amount * 100 / baseline["EUR"]);
+                    baseline[price.base] = btcEquivalent;
                 }
 
                 if (!datasets[price.base]) {
@@ -54,7 +39,10 @@
                     };
                 }
 
-                datasets[price.base].data.push(price.btcEquivalent * 100 / baseline[price.base]);
+                datasets[price.base].data.push(
+                    price.base === "BTC" ? 100
+                        : btcEquivalent * 100 / baseline[price.base]
+                );
             }
         }
 
@@ -80,8 +68,8 @@
             this.loaded = false;
             try {
                 const response = await fetch.default(url, {
-                        method: 'GET'
-                    });
+                    method: 'GET'
+                });
                 const reports = await response.json();
                 this.chartdata = toChartData(reports);
                 this.loaded = true

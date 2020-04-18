@@ -2,7 +2,7 @@
   "name": "coin-rates-poll",
   "version": "1.0.0",
   "dependencies": {
-    "aws-sdk": "^2.656.0",
-    "coinbase": "^2.0.8"
+    "node-fetch": "^2.6.0",
+    "aws-sdk": "^2.656.0"
   }
 }
