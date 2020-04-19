@@ -2,13 +2,13 @@ const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 
 const bucket = "coin-balancer";
-const thresholdInMs = 3 * 60 * 60 * 1000;
+const millisecondsInHour = 60 * 60 * 1000;
 const baseline = "1587162997926";
 
 module.exports = {
 
-    loadReports: async function () {
-        const since = Number(Date.now() - thresholdInMs);
+    loadReports: async function (ago) {
+        const since = Number(Date.now() - ago * millisecondsInHour);
 
         const listAllInBucket = {
             Bucket: bucket,

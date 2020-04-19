@@ -1,5 +1,10 @@
 <template>
     <div class="container">
+        <time-threshold
+                :selected="timeThreshold.selected"
+                :options="timeThreshold.options"
+                @changed="handleThresholdChange($event)"/>
+
         <rates-chart
                 v-if="loaded"
                 :chartdata="chartdata"
@@ -8,6 +13,7 @@
 </template>
 
 <script>
+    import TimeThreshold from './TimeThreshold'
     import RatesChart from './Chart.vue'
     import Currencies from '../currencies'
 
@@ -52,7 +58,27 @@
     export default {
         name: 'RatesBoard',
         components: {
-            RatesChart
+            RatesChart,
+            TimeThreshold
+        },
+        methods: {
+            async handleThresholdChange(event) {
+                this.timeThreshold.selected = event.target.options[event.target.options.selectedIndex].value;
+                await this.refreshRates();
+            },
+            async refreshRates() {
+                try {
+                    this.loaded = false;
+                    const response = await fetch.default(url + "?ago=" + this.timeThreshold.selected, {
+                        method: 'GET'
+                    });
+                    const reports = await response.json();
+                    this.chartdata = toChartData(reports);
+                    this.loaded = true
+                } catch (e) {
+                    console.error(e);
+                }
+            }
         },
         data: () => ({
             loaded: false,
@@ -64,20 +90,18 @@
                     display: true,
                     text: "Coin rates"
                 }
+            },
+            timeThreshold: {
+                selected: '3',
+                options: [
+                    {text: '3 hours', value: '3'},
+                    {text: '10 hours', value: '10'},
+                    {text: '24 hours', value: '24'}
+                ]
             }
         }),
         async mounted() {
-            this.loaded = false;
-            try {
-                const response = await fetch.default(url, {
-                    method: 'GET'
-                });
-                const reports = await response.json();
-                this.chartdata = toChartData(reports);
-                this.loaded = true
-            } catch (e) {
-                console.error(e);
-            }
+            await this.refreshRates();
         }
     }
 </script>
