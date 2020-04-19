@@ -1,31 +1,22 @@
 <template>
-  <div id="app">
-    <LineChart/>
+  <div id="dashboard">
+    <rates-board/>
   </div>
 </template>
 
 <script>
-  import LineChart from "./components/LineChart.vue"
+  import RatesBoard from "./components/RatesBoard"
 
   export default {
-    name: "App",
+    name: "Dashboard",
     components: {
-      LineChart
-    },
-    data() {
-      return {
-        chartData: {
-          Books: 24,
-          Magazine: 30,
-          Newspapers: 10
-        }
-      };
+      RatesBoard
     }
   };
 </script>
 
 <style>
-  #app {
+  #dashboard {
     font-family: "Avenir", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

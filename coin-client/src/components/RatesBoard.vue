@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <line-chart
+        <rates-chart
                 v-if="loaded"
                 :chartdata="chartdata"
                 :options="options"/>
@@ -8,7 +8,7 @@
 </template>
 
 <script>
-    import LineChart from './Chart.vue'
+    import RatesChart from './Chart.vue'
     import Currencies from '../currencies'
 
     const fetch = require("node-fetch");
@@ -50,8 +50,10 @@
     }
 
     export default {
-        name: 'LineChartContainer',
-        components: {LineChart},
+        name: 'RatesBoard',
+        components: {
+            RatesChart
+        },
         data: () => ({
             loaded: false,
             chartdata: null,
