@@ -5,6 +5,8 @@
                 :options="timeThreshold.options"
                 @changed="handleThresholdChange($event)"/>
 
+        <button v-on:click="refreshRates">Refresh</button>
+
         <rates-chart
                 v-if="loaded"
                 :chartdata="chartdata"
