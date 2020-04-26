@@ -18,7 +18,8 @@
         </form>
 
         <div>
-            <div v-for="(trade, index) in trades" v-bind:key="trade.id">
+            <input type="button" value="Refresh" v-on:click="fetchOpenTrades"/>
+            <div v-for="(trade, index) in trades" v-bind:key="trade.timestamp">
                 <p v-text="trade.cgCost + ' ' + trade.fromCoin + ' ' + trade.toCoin"></p>
                 <input type="button" v-on:click="trades.splice(index, 1)" value="Remove"/>
             </div>
@@ -30,39 +31,44 @@
     const fetch = require("node-fetch");
     const url = "https://ioerjs2o02.execute-api.eu-west-1.amazonaws.com/dev/trades/open";
 
+    const fetchUrl = "https://ia9c9sqyx1.execute-api.eu-west-1.amazonaws.com/dev/trades/open/fetch";
+
     export default {
         methods: {
             async openTrade() {
+                const newTrade = {
+                    timestamp: Date.now(),
+                    cgCost: this.cgCost,
+                    fromCoin: this.fromCoin,
+                    toCoin: this.toCoin
+                };
+
                 fetch.default(url, {
                     method: 'POST',
-                    body: JSON.stringify({
-                        timestamp: Date.now(),
-                        cgCost: this.cgCost,
-                        fromCoin: this.fromCoin,
-                        toCoin: this.toCoin
-                    }),
+                    body: JSON.stringify(newTrade),
                     headers: {'Content-Type': 'application/json'}
                 }).catch(err => console.error(err));
+
+                this.trades.push(newTrade);
+            },
+
+            async fetchOpenTrades() {
+                const response =
+                    await fetch.default(fetchUrl, {
+                        method: 'GET'
+                    }).catch(err => console.error(err));
+
+                this.trades = await response.json();
             }
         },
         data: () => ({
             cgCost: 0.01,
             fromCoin: "BTC",
             toCoin: "XTZ",
-            trades: [
-                {
-                    id: "123",
-                    fromCoin: "BTC",
-                    toCoin: "XTZ",
-                    cgCost: 0.02
-                },
-                {
-                    id: "333",
-                    fromCoin: "BTC",
-                    toCoin: "DASH",
-                    cgCost: 0.02
-                }
-            ]
-        })
+            trades: []
+        }),
+        mounted() {
+            this.fetchOpenTrades();
+        }
     }
 </script>

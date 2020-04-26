@@ -18,8 +18,6 @@ module.exports = {
 
         const storedRatesInfo = await s3.listObjectsV2(listAllInBucket).promise();
 
-        console.log(storedRatesInfo);
-
         const foundRates = [];
         for (let nextRateReference of storedRatesInfo.Contents) {
             const rateName = nextRateReference.Key.replace("rates/", "");

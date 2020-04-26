@@ -1,0 +1,43 @@
+service: coin-trades-fetch
+
+plugins:
+  - serverless-api-compression
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-west-1
+  memorySize: 128
+  timeout: 10
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:ListBucket"
+      Resource: "arn:aws:s3:::coin-balancer"
+    - Effect: "Allow"
+      Action:
+        - "s3:GetObject"
+      Resource: "arn:aws:s3:::coin-balancer/*"
+
+package:
+  include:
+    - node_modules
+    - services
+    - handler.js
+    - package.json
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  contentEncoding:
+    contentCompression: 100
+
+functions:
+  fetchOpen:
+    handler: handler.fetchOpen
+    events:
+      - http:
+          path: trades/open/fetch
+          method: get
+          cors: true
