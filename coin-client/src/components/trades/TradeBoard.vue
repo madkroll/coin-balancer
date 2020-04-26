@@ -11,11 +11,6 @@
         name: 'TradeBoard',
         components: {
             OpenTrade
-        },
-        data: () => ({
-
-        }),
-        async mounted() {
         }
     }
 </script>

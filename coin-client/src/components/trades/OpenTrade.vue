@@ -16,6 +16,13 @@
 
             <input type="button" value="Open" v-on:click="openTrade"/>
         </form>
+
+        <div>
+            <div v-for="(trade, index) in trades" v-bind:key="trade.id">
+                <p v-text="trade.cgCost + ' ' + trade.fromCoin + ' ' + trade.toCoin"></p>
+                <input type="button" v-on:click="trades.splice(index, 1)" value="Remove"/>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -42,6 +49,20 @@
             cgCost: 0.01,
             fromCoin: "BTC",
             toCoin: "XTZ",
+            trades: [
+                {
+                    id: "123",
+                    fromCoin: "BTC",
+                    toCoin: "XTZ",
+                    cgCost: 0.02
+                },
+                {
+                    id: "333",
+                    fromCoin: "BTC",
+                    toCoin: "DASH",
+                    cgCost: 0.02
+                }
+            ]
         })
     }
 </script>
