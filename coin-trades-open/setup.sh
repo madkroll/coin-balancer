@@ -18,6 +18,9 @@ function log() {
   echo "$(isodate): $*"
 }
 
+log "## Install SLS plugins"
+npm install --save-dev serverless-api-compression
+
 log "## Build ${APP_NAME}/${COMPONENT_NAME}"
 npm install
 

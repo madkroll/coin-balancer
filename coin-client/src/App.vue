@@ -1,16 +1,19 @@
 <template>
   <div id="dashboard">
     <rates-board/>
+    <trade-board/>
   </div>
 </template>
 
 <script>
   import RatesBoard from "./components/RatesBoard"
+  import TradeBoard from "./components/trades/TradeBoard";
 
   export default {
     name: "Dashboard",
     components: {
-      RatesBoard
+      RatesBoard,
+      TradeBoard
     }
   };
 </script>

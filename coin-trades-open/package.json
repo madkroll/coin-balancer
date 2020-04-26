@@ -1,0 +1,10 @@
+{
+  "name": "coin-rates-fetch",
+  "version": "1.0.0",
+  "dependencies": {
+    "aws-sdk": "^2.656.0"
+  },
+  "devDependencies": {
+    "serverless-api-compression": "^1.0.1"
+  }
+}

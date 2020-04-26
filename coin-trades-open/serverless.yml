@@ -1,0 +1,39 @@
+service: coin-trades-open
+
+plugins:
+  - serverless-api-compression
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-west-1
+  memorySize: 128
+  timeout: 10
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:PutObject"
+      Resource: "arn:aws:s3:::coin-balancer/*"
+
+package:
+  include:
+    - node_modules
+    - services
+    - handler.js
+    - package.json
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  contentEncoding:
+    contentCompression: 100
+
+functions:
+  open:
+    handler: handler.open
+    events:
+      - http:
+          path: trades/open
+          method: post
+          cors: true
