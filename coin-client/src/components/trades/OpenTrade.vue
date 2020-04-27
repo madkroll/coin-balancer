@@ -20,8 +20,8 @@
         <div>
             <input type="button" value="Refresh" v-on:click="fetchOpenTrades"/>
             <div v-for="(trade, index) in trades" v-bind:key="trade.timestamp">
-                <p v-text="trade.cgCost + ' ' + trade.fromCoin + ' ' + trade.toCoin"></p>
-                <input type="button" v-on:click="trades.splice(index, 1)" value="Remove"/>
+                <p v-text="trade.fromCoin + ' to ' + trade.toCoin + ' ( ' + trade.cgCost + ' )'"></p>
+                <input type="button" v-on:click="removeTrade(index)" value="Remove"/>
             </div>
         </div>
     </div>
@@ -32,6 +32,8 @@
     const url = "https://ioerjs2o02.execute-api.eu-west-1.amazonaws.com/dev/trades/open";
 
     const fetchUrl = "https://ia9c9sqyx1.execute-api.eu-west-1.amazonaws.com/dev/trades/open/fetch";
+
+    const removeUrl = "https://45c8y05659.execute-api.eu-west-1.amazonaws.com/dev/trades/open/remove";
 
     export default {
         methods: {
@@ -50,6 +52,16 @@
                 }).catch(err => console.error(err));
 
                 this.trades.push(newTrade);
+            },
+
+            async removeTrade(index) {
+                fetch.default(removeUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({timestamp: this.trades[index].timestamp}),
+                    headers: {'Content-Type': 'application/json'}
+                }).catch(err => console.error(err));
+
+                this.trades.splice(index, 1);
             },
 
             async fetchOpenTrades() {
