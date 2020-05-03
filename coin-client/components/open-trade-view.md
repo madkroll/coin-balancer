@@ -6,15 +6,31 @@
 2. Signals to buy CG
 3. Shows real-time win / loss
 
-## Input Fields
+## Fields
 
-- trade timestamp
-- source coin
-- source coin amount
-- source CG price
-- destination coin
-- destination coin amount
-- destination CG price
+```json
+{
+  "id" : "87e3f86b-ac48-4c84-a2f5-8b5739aec9c5",
+  "timestamp" : 1588513204,
+  "datetime" : "01-01-2020T11:12:13.324",
+  "title" : "ZRX to KNC",
+  "sold" : {
+    "currency" : "ZRX",
+    "amount" : 123,
+    "rate" : 0.19,
+    "cgRate" : 0.00004,
+    "currentRate": 0.2,
+    "currentCGRate": 0.00006
+  },
+  "bought" : {
+    "currency" : "KNC",
+    "amount" : 30,
+    "buyBackAmount" : 123,
+    "currentRate": 0.2,
+    "currentCGRate": 0.00006
+  }
+}
+```
 
 ## Output controls
 
