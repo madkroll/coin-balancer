@@ -71,7 +71,7 @@
 
     const currentRatesUrl = "https://www.coinbase.com/api/v2/assets/prices?filter=listed&resolution=latest";
 
-    const pollingIntervalMs = 300000;
+    const pollingIntervalMs = 60000;
     let pollCGRates;
     let pollRates;
 
@@ -110,16 +110,12 @@
                         currency : this.input.sold.currency,
                         amount : this.input.sold.amount,
                         rate : this.input.sold.rate,
-                        cgRate : this.input.sold.cgRate,
-                        currentRate: null,
-                        currentCGRate: null
+                        cgRate : this.input.sold.cgRate
                     },
                     bought : {
                         currency : this.input.bought.currency,
                         amount : this.input.bought.amount,
-                        buyBackAmount : null,
-                        currentRate: null,
-                        currentCGRate: null
+                        buyBackAmount : null
                     }
                 };
 
