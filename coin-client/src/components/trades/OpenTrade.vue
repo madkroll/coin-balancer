@@ -45,12 +45,12 @@
                     <tr>
                         <td>BTC</td>
                         <td v-text="trade.sold.cgRate">
-                        <td v-text="trade.bought.currentRate">
+                        <td>{{ cgRates[trade.bought.currency] * trade.bought.amount }} ( {{ cgRates[trade.bought.currency] }} )</td>
                     </tr>
                     <tr>
                         <td>EUR</td>
                         <td v-text="trade.sold.rate">
-                        <td v-text="trade.bought.currentCGRate">
+                        <td>{{ Number(rates[trade.bought.currency] * trade.bought.amount).toFixed(5) }} ( {{ Number(rates[trade.bought.currency]).toFixed(5) }} )</td>
                     </tr>
                 </table>
 
@@ -80,12 +80,24 @@
             async refreshCGRates() {
                 const response = await fetch.default(currentRatesUrl + "&base=BTC");
                 const jsonBody = await response.json();
-                this.cgRates = jsonBody.data;
+
+                const foundRates = {};
+                for (let rate of jsonBody.data) {
+                    foundRates[rate.base] = rate.prices.latest;
+                }
+
+                this.cgRates = foundRates;
             },
             async refreshRates() {
                 const response = await fetch.default(currentRatesUrl + "&base=EUR");
                 const jsonBody = await response.json();
-                this.rates = jsonBody.data;
+
+                const foundRates = {};
+                for (let rate of jsonBody.data) {
+                    foundRates[rate.base] = rate.prices.latest;
+                }
+
+                this.rates = foundRates;
             },
             async openTrade() {
                 const timestamp = Date.now();
@@ -131,6 +143,8 @@
             },
 
             async fetchOpenTrades() {
+                await this.refreshRates();
+                await this.refreshCGRates();
                 const response =
                     await fetch.default(fetchUrl, {
                         method: 'GET'
