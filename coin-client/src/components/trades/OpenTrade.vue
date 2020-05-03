@@ -69,8 +69,24 @@
 
     const removeUrl = "https://45c8y05659.execute-api.eu-west-1.amazonaws.com/dev/trades/open/remove";
 
+    const currentRatesUrl = "https://www.coinbase.com/api/v2/assets/prices?filter=listed&resolution=latest";
+
+    const pollingIntervalMs = 300000;
+    let pollCGRates;
+    let pollRates;
+
     export default {
         methods: {
+            async refreshCGRates() {
+                const response = await fetch.default(currentRatesUrl + "&base=BTC");
+                const jsonBody = await response.json();
+                this.cgRates = jsonBody.data;
+            },
+            async refreshRates() {
+                const response = await fetch.default(currentRatesUrl + "&base=EUR");
+                const jsonBody = await response.json();
+                this.rates = jsonBody.data;
+            },
             async openTrade() {
                 const timestamp = Date.now();
                 const newTrade = {
@@ -83,15 +99,15 @@
                         amount : this.input.sold.amount,
                         rate : this.input.sold.rate,
                         cgRate : this.input.sold.cgRate,
-                        currentRate: 0.0,
-                        currentCGRate: 0.0
+                        currentRate: null,
+                        currentCGRate: null
                     },
                     bought : {
                         currency : this.input.bought.currency,
                         amount : this.input.bought.amount,
-                        buyBackAmount : 0,
-                        currentRate: 0.0,
-                        currentCGRate: 0.0
+                        buyBackAmount : null,
+                        currentRate: null,
+                        currentCGRate: null
                     }
                 };
 
@@ -123,6 +139,21 @@
                 this.trades = await response.json();
             }
         },
+        created: function () {
+            this.refreshCGRates();
+            pollCGRates = setInterval(function () {
+                this.refreshCGRates();
+            }.bind(this), pollingIntervalMs);
+
+            this.refreshRates();
+            pollRates = setInterval(function () {
+                this.refreshRates();
+            }.bind(this), pollingIntervalMs);
+        },
+        destroyed() {
+            clearInterval(pollCGRates);
+            clearInterval(pollRates);
+        },
         data: () => ({
             input: {
                 sold: {
@@ -136,7 +167,9 @@
                     amount: 34
                 }
             },
-            trades: []
+            trades: [],
+            rates: [],
+            cgRates: []
         }),
         mounted() {
             this.fetchOpenTrades();
